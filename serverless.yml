@@ -1,0 +1,34 @@
+service: virtualceo-api
+frameworkVersion: '3'
+
+plugins:
+  - serverless-aws-function-url-custom-domain
+
+provider:
+  name: aws
+  runtime: python3.9
+  stage: prod
+  region: us-east-1
+  timeout: 60
+  memorySize: 512
+  versionFunctions: false
+  environment:
+    OPENAI_API_KEY: "some api key"
+
+functions:
+  api-handler:
+    handler: api-handler.api
+    layers:
+      - arn:aws:lambda:us-east-1:<your account id>:layer:layer-with-openai-py:1
+    url: true
+
+custom:
+  urlDomain:
+    domains:
+      - api.yourdomain.com
+    hostedZoneName: yourhostedzonename.com.
+    certificateArn: 'arn:aws:acm:us-east-1:youraccountid:certificate/some-certificate-id'
+    route53: true
+
+resources:
+    Description: Virtual CEO API Stack
